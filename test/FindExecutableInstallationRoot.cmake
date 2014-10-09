@@ -1,0 +1,14 @@
+# /tests/FindExecutableInstallationRoot.cmake
+# Finds the installation root for our custom executable.
+#
+# See LICENCE.md for Copyright information.
+
+include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
+include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+
+set (CUSTOM_EXECUTABLE ${CUSTOM_EXECUTABLE_LOCATION}/${CUSTOM_EXECUTABLE_NAME})
+psq_find_executable_installation_root (${CUSTOM_EXECUTABLE} INSTALL_ROOT
+                                       PREFIX_SUBDIRECTORY sample_executable)
+
+assert_variable_is (${INSTALL_ROOT}
+                    STRING EQUAL ${CUSTOM_EXECUTABLE_INSTALL_ROOT})
