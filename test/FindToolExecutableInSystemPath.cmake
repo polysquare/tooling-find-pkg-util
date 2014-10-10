@@ -3,8 +3,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
-include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (ToolingFindPackageUtil)
+include (CMakeUnit)
 
 set (ENV{PATH} "${CUSTOM_EXECUTABLE_LOCATION};$ENV{PATH}")
 

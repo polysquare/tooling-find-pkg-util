@@ -3,8 +3,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
-include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (ToolingFindPackageUtil)
+include (CMakeUnit)
 
 set (PATH_TO_FIND ${CMAKE_CURRENT_BINARY_DIR}/custom_path)
 file (MAKE_DIRECTORY ${PATH_TO_FIND})

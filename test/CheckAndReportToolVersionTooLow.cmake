@@ -3,8 +3,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
-include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (ToolingFindPackageUtil)
+include (CMakeUnit)
 
 set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_HIGHER_VERSION})
 psq_check_and_report_tool_version (PREFIX 
