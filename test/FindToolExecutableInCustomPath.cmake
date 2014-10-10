@@ -3,8 +3,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
-include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (ToolingFindPackageUtil)
+include (CMakeUnit)
 
 psq_find_tool_executable (${CUSTOM_EXECUTABLE_NAME} PATH_TO_EXECUTABLE
                           CUSTOM_PATHS ${CUSTOM_EXECUTABLE_INSTALL_ROOT}

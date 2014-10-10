@@ -4,8 +4,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/ToolingFindPackageUtil.cmake)
-include (${POLYSQUARE_FP_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (ToolingFindPackageUtil)
+include (CMakeUnit)
 
 set (PREFIX_FIND_VERSION_EXACT TRUE)
 set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_EXACT_VERSION})
