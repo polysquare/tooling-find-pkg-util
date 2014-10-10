@@ -159,7 +159,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
                 FIND_TOOL_VHEADER_SIZE)
         math (EXPR FIND_TOOL_VERSION_START
               "${FIND_TOOL_VHEADER_LOC} + ${FIND_TOOL_VHEADER_SIZE}")
-        string (SUBSTRING "${FIND_TOOL_VERSION_OUTPUT}"
+        string (SUBSTRING "${TOOL_VERSION_OUTPUT}"
                 ${FIND_TOOL_VERSION_START} -1 FIND_TOOL_VERSION_TO_END)
 
     else (FIND_TOOL_VERSION_HEADER)
