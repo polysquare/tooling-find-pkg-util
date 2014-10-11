@@ -96,7 +96,7 @@ function (psq_find_tool_executable EXECUTABLE_TO_FIND PATH_RETURN)
                            "${FIND_TOOL_EXECUTABLE_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    set (PATH_TO_EXECUTABLE)
+    unset (PATH_TO_EXECUTABLE CACHE)
     if (FIND_TOOL_EXECUTABLE_CUSTOM_PATHS)
 
         set (PATHS ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS})
