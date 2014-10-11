@@ -50,7 +50,7 @@ function (_psq_find_tool_executable_in_custom_paths EXECUTABLE_TO_FIND
                            "${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    
+    unset (PATH_TO_EXECUTABLE CACHE)
     find_program (PATH_TO_EXECUTABLE
                   ${EXECUTABLE_TO_FIND}
                   PATHS ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS}
@@ -68,6 +68,7 @@ endfunction (_psq_find_tool_executable_in_custom_paths)
 function (_psq_find_tool_executable_in_system_paths EXECUTABLE_TO_FIND
                                                     PATH_RETURN)
 
+    unset (PATH_TO_EXECUTABLE CACHE)
     find_program (PATH_TO_EXECUTABLE ${EXECUTABLE_TO_FIND})
 
     if (PATH_TO_EXECUTABLE)
@@ -100,7 +101,6 @@ function (psq_find_tool_executable EXECUTABLE_TO_FIND PATH_RETURN)
 
         set (PATHS ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS})
         set (PATH_SUFFIXES ${FIND_TOOL_EXECUTABLE_PATH_SUFFIXES})
-        message ("SEARCHING ${PATHS} SUFFIXES ${PATH_SUFFIXES}")
         _psq_find_tool_executable_in_custom_paths (${EXECUTABLE_TO_FIND}
                                                    PATH_TO_EXECUTABLE
                                                    PATHS
