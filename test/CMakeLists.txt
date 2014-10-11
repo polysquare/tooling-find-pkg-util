@@ -31,6 +31,12 @@ set (POLYSQUARE_INITIAL_CACHE_CONTENTS
      "set (CUSTOM_EXECUTABLE_INSTALL_ROOT\n"
      "     ${CMAKE_CURRENT_BINARY_DIR}\n"
      "     CACHE STRING \"\" FORCE)\n"
+     "set (OTHER_EXECUTABLE_NAME\n"
+     "     other_sample_executable\n"
+     "     CACHE STRING \"\" FORCE)\n"
+     "set (OTHER_EXECUTABLE_INSTALL_ROOT\n"
+     "     ${CMAKE_CURRENT_BINARY_DIR}\n"
+     "     CACHE STRING \"\" FORCE)\n"
      "set (CUSTOM_EXECUTABLE_LOCATION\n"
      "     ${CMAKE_CURRENT_BINARY_DIR}/sample_executable\n"
      "     CACHE STRING \"\" FORCE)\n"
@@ -65,6 +71,7 @@ add_cmake_test (CheckAndReportToolVersionWithinRange)
 add_cmake_test (FindExecutableInstallationRoot)
 add_cmake_test (FindPathInInstallationRoot)
 add_cmake_test (FindToolExecutableInCustomPath)
+add_cmake_test (ExecutableNameNotCached)
 # This should work, but it appears that PATH is read from the point when
 # CMake is launched and not immediately before calling find_program.
 #add_cmake_test (FindToolExecutableInSystemPath)
@@ -88,3 +95,4 @@ add_cmake_build_test (ReportToolNotFoundIfQuietAndRequired
                       ALLOW_CONFIGURE_FAIL NO_CLEAN)
 
 add_subdirectory (sample_executable)
+add_subdirectory (other_sample_executable)
