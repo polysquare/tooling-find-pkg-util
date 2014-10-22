@@ -22,50 +22,32 @@ get_filename_component (POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY
 set (CMAKE_UNIT_DIRECTORY
      ${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}/cmake-unit)
 
-# Put our directories into the cache as well as the parameters for the
-# Google Test distribution.
-set (POLYSQUARE_INITIAL_CACHE_CONTENTS
-     "set (CUSTOM_EXECUTABLE_NAME\n"
-     "     sample_executable\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CUSTOM_EXECUTABLE_INSTALL_ROOT\n"
-     "     ${CMAKE_CURRENT_BINARY_DIR}\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (OTHER_EXECUTABLE_NAME\n"
-     "     other_sample_executable\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (OTHER_EXECUTABLE_INSTALL_ROOT\n"
-     "     ${CMAKE_CURRENT_BINARY_DIR}\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CUSTOM_EXECUTABLE_LOCATION\n"
-     "     ${CMAKE_CURRENT_BINARY_DIR}/sample_executable\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CUSTOM_EXECUTABLE_LOWER_VERSION\n"
-     "     1.2.2\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CUSTOM_EXECUTABLE_HIGHER_VERSION\n"
-     "     1.2.4\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (CUSTOM_EXECUTABLE_EXACT_VERSION\n"
-     "     1.2.3\n"
-     "     CACHE STRING \"\" FORCE)\n")
+# Setup variables for finding custom executable, etc
+set (CUSTOM_EXECUTABLE_NAME sample_executable)
+set (CUSTOM_EXECUTABLE_INSTALL_ROOT ${CMAKE_CURRENT_BINARY_DIR})
+set (OTHER_EXECUTABLE_NAME other_sample_executable)
+set (OTHER_EXECUTABLE_INSTALL_ROOT ${CMAKE_CURRENT_BINARY_DIR})
+set (CUSTOM_EXECUTABLE_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/sample_executable)
+set (CUSTOM_EXECUTABLE_LOWER_VERSION 1.2.2)
+set (CUSTOM_EXECUTABLE_HIGHER_VERSION 1.2.4)
+set (CUSTOM_EXECUTABLE_EXACT_VERSION 1.2.3)
 
 set (CMAKE_MODULE_PATH
      ${CMAKE_UNIT_DIRECTORY}
      ${POLYSQUARE_FP_TOOLING_CMAKE_DIRECTORY}
      ${CMAKE_MODULE_PATH})
 
-foreach (PATH ${CMAKE_MODULE_PATH})
-     set (POLYSQUARE_INITIAL_CACHE_CONTENTS
-          "${POLYSQUARE_INITIAL_CACHE_CONTENTS}\n"
-          "set (CMAKE_MODULE_PATH ${PATH} \${CMAKE_MODULE_PATH}\n"
-          "     CACHE STRING \"\" FORCE)\n")
-endforeach ()
-
 include (CMakeUnitRunner)
 
-bootstrap_cmake_unit (INITIAL_CACHE_CONTENTS
-                      POLYSQUARE_INITIAL_CACHE_CONTENTS)
+bootstrap_cmake_unit (VARIABLES CMAKE_MODULE_PATH
+                                CUSTOM_EXECUTABLE_NAME
+                                CUSTOM_EXECUTABLE_INSTALL_ROOT
+                                OTHER_EXECUTABLE_NAME
+                                OTHER_EXECUTABLE_INSTALL_ROOT
+                                CUSTOM_EXECUTABLE_LOCATION
+                                CUSTOM_EXECUTABLE_LOWER_VERSION
+                                CUSTOM_EXECUTABLE_HIGHER_VERSION
+                                CUSTOM_EXECUTABLE_EXACT_VERSION)
 
 add_cmake_test (CheckAndReportToolVersionWithinRange)
 add_cmake_test (FindExecutableInstallationRoot)
