@@ -7,4 +7,4 @@ include (ToolingFindPackageUtil)
 include (CMakeUnit)
 
 set (PREFIX_FIND_QUIETLY TRUE)
-psq_print_if_not_quiet (PREFIX "My message")
+psq_print_if_not_quiet (PREFIX MSG "My message")

@@ -1,11 +1,11 @@
 # /tests/ReportToolNotFoundIfQuietAndRequiredVerify.cmake
-# Check that "Not found report" is in the configure out.
+# Check that "Could NOT find PREFIX" is in the configure errors.
 #
 # See LICENCE.md for Copyright information.
 
 include (CMakeUnit)
 
-set (CONFIGURE_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/CONFIGURE.error)
+set (CONFIGURE_ERRORS ${CMAKE_CURRENT_BINARY_DIR}/CONFIGURE.error)
 
-assert_file_has_line_matching (${CONFIGURE_OUTPUT}
-                               "^.*Not found report.*$")
+assert_file_has_line_matching (${CONFIGURE_ERRORS}
+                               "^.*Could NOT find PREFIX.*$")

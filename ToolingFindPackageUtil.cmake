@@ -6,6 +6,8 @@
 # See LICENCE.md for Copyright information
 
 include (CMakeParseArguments)
+include (FindPackageHandleStandardArgs)
+include (FindPackageMessage)
 
 # psq_print_if_not_quiet
 #
@@ -13,13 +15,39 @@ include (CMakeParseArguments)
 # as long as ${PREFIX}_FIND_QUIETLY is not set
 #
 # PREFIX: The package prefix passed to find_package for this module
+# MSG: Message to print
+# DEPENDS: Variables, which when changed, the message should be re-displayed
 function (psq_print_if_not_quiet PREFIX)
 
-    string (REPLACE ";" " " MSG "${ARGN}")
+    set (PRINT_IF_NOT_QUIET_MULTIVAR_ARGS MSG DEPENDS)
+    cmake_parse_arguments (PRINT_IF_NOT_QUIET
+                           ""
+                           ""
+                           "${PRINT_IF_NOT_QUIET_MULTIVAR_ARGS}"
+                           ${ARGN})
 
-    if (NOT ${PREFIX}_FIND_QUIETLY)
-        message (STATUS ${MSG})
-    endif (NOT ${PREFIX}_FIND_QUIETLY)
+    string (REPLACE ";" " " MSG "${PRINT_IF_NOT_QUIET_MSG}")
+
+    set (DEPEND_VARS_STRING "")
+    foreach (DEPEND_VAR ${DEPENDS})
+
+        set (DEPEND_VARS_STRING "${DEPEND_VARS_STRING}[${${DEPEND_VAR}}]")
+
+    endforeach ()
+
+    if (DEPEND_VARS_STRING)
+
+        find_package_message (${PREFIX} "${MSG}" "${DEPEND_VARS_STRING}")
+
+    else (DEPEND_VARS_STRING)
+
+        if (NOT ${PREFIX}_FIND_QUIETLY)
+
+            message (STATUS "${MSG}")
+
+        endif (NOT ${PREFIX}_FIND_QUIETLY)
+
+    endif (DEPEND_VARS_STRING)
 
 endfunction ()
 
@@ -34,11 +62,11 @@ function (psq_report_not_found_if_not_quiet PREFIX VARIABLE)
 
     if (NOT ${VARIABLE})
 
-        psq_print_if_not_quiet (${PREFIX} ${ARGN})
+        psq_print_if_not_quiet (${PREFIX} MSG ${ARGN})
 
     endif (NOT ${VARIABLE})
 
-endfunction (psq_report_not_found_if_not_quiet)
+endfunction ()
 
 function (_psq_find_tool_executable_in_custom_paths EXECUTABLE_TO_FIND
                                                     PATH_RETURN)
@@ -192,6 +220,9 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
 
     endif (NOT FIND_TOOL_VERSION)
 
+    # Strip out any \n
+    string (REPLACE "\n" "" FIND_TOOL_VERSION "${FIND_TOOL_VERSION}")
+
     set (${VERSION_RETURN} ${FIND_TOOL_VERSION} PARENT_SCOPE)
 
 endfunction ()
@@ -201,57 +232,40 @@ endfunction ()
 # For the package specified by PREFIX, determines if the detected
 # VERSION matched the requested version passed to find_package. If not
 # and we are not finding quietly, report problems. If the version check
-# is satisfied, place the result into SUCCESS_RETURN
+# is satisfied and all REQUIRED_VARS are set, then set each of the
+# REQUIRED_VARS in the PARENT_SCOPE
 #
 # PREFIX: The package prefix passed to find_package for this module
 # VERSION: The detected tool version
-# SUCCESS_RETURN: TRUE set in the parent scope if the version is satisfied.
-function (psq_check_and_report_tool_version PREFIX VERSION SUCCESS_RETURN)
+# REQUIRED_VARS : Required variables, set in parent scope if present
+#                 Must specify at least one.
+macro (psq_check_and_report_tool_version PREFIX VERSION)
 
     string (STRIP "${VERSION}" VERSION)
 
-    if (${PREFIX}_FIND_VERSION)
+    cmake_parse_arguments (_PSQ_CHECK_${PREFIX}
+                           ""
+                           ""
+                           "REQUIRED_VARS"
+                           ${ARGN})
 
-        if (${VERSION} VERSION_GREATER ${${PREFIX}_FIND_VERSION})
+    find_package_handle_standard_args (${PREFIX}
+                                       FOUND_VAR ${PREFIX}_FOUND
+                                       REQUIRED_VARS
+                                       ${_PSQ_CHECK_${PREFIX}_REQUIRED_VARS}
+                                       VERSION_VAR VERSION)
 
-            set (VERSION_IS_GREATER TRUE)
+    if (${PREFIX}_FOUND)
 
-        elseif (${VERSION} VERSION_EQUAL ${${PREFIX}_FIND_VERSION})
+        foreach (VARIABLE ${_PSQ_CHECK_${PREFIX}_REQUIRED_VARS})
 
-            set (VERSION_IS_EQUAL TRUE)
+            set (${VARIABLE} ${${VARIABLE}} PARENT_SCOPE)
 
-        endif (${VERSION} VERSION_GREATER ${${PREFIX}_FIND_VERSION})
+        endforeach ()
 
-        # If we want an EXACT version and there's a mismatch, report failure
-        if (${PREFIX}_FIND_VERSION_EXACT AND NOT VERSION_IS_EQUAL)
+    endif (${PREFIX}_FOUND)
 
-            psq_print_if_not_quiet (${PREFIX}
-                                    "Requested exact version: "
-                                    "${${PREFIX}_FIND_VERSION} but "
-                                    "${PREFIX} version was ${VERSION}")
-            set (${SUCCESS_RETURN} FALSE PARENT_SCOPE)
-            return ()
-
-        endif (${PREFIX}_FIND_VERSION_EXACT AND NOT VERSION_IS_EQUAL)
-
-        # If we specified a version and the actual version was LESS then
-        # also report a failure
-        if (NOT VERSION_IS_EQUAL AND NOT VERSION_IS_GREATER)
-
-            psq_print_if_not_quiet (${PREFIX}
-                                    "Requested at least version:"
-                                    "${${PREFIX}_FIND_VERSION} but "
-                                    "${PREFIX} version was ${VERSION}")
-            set (${SUCCESS_RETURN} FALSE PARENT_SCOPE)
-            return ()
-
-        endif (NOT VERSION_IS_EQUAL AND NOT VERSION_IS_GREATER)
-
-    endif (${PREFIX}_FIND_VERSION)
-
-    set (${SUCCESS_RETURN} TRUE PARENT_SCOPE)
-
-endfunction (psq_check_and_report_tool_version)
+endmacro (psq_check_and_report_tool_version)
 
 # psq_find_executable_installation_root
 #
@@ -323,27 +337,3 @@ function (psq_find_path_in_installation_root INSTALL_ROOT
     endif (_PATH)
 
 endfunction (psq_find_path_in_installation_root)
-
-# psq_report_tool_not_found
-#
-# For the package specified by PREFIX, prints an error message
-# (either fatal if ${PREFIX}_FIND_REQUIRED is set or just a STATUS message)
-# if ${PREFIX}_FOUND is not set.
-#
-# PREFIX: The package prefix passed to find_package for this module
-function (psq_report_tool_not_found PREFIX)
-
-    if (${PREFIX}_FIND_REQUIRED)
-        set (_NOT_FOUND_MSG_TYPE SEND_ERROR)
-    else (${PREFIX}_FIND_REQUIRED)
-        set (_NOT_FOUND_MSG_TYPE STATUS)
-    endif (${PREFIX}_FIND_REQUIRED)
-
-    if (NOT ${PREFIX}_FIND_QUIETLY OR
-        ${PREFIX}_FIND_REQUIRED)
-        string (REPLACE ";" " " MSG "${ARGN}")
-        message (${_NOT_FOUND_MSG_TYPE} ${MSG})
-    endif (NOT ${PREFIX}_FIND_QUIETLY OR
-           ${PREFIX}_FIND_REQUIRED)
-
-endfunction (psq_report_tool_not_found)

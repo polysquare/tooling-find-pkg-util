@@ -13,4 +13,4 @@ psq_find_path_in_installation_root (${CMAKE_CURRENT_BINARY_DIR}
                                     custom_path
                                     FOUND_PATH)
 
-assert_variable_is (${PATH_TO_FIND} STRING EQUAL ${FOUND_PATH})
+assert_variable_is (PATH_TO_FIND STRING EQUAL ${FOUND_PATH})
