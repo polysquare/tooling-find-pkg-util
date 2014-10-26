@@ -7,11 +7,17 @@
 include (ToolingFindPackageUtil)
 include (CMakeUnit)
 
-set (PREFIX_FIND_VERSION_EXACT TRUE)
-set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_EXACT_VERSION})
-set (PREFIX_FIND_QUIETLY FALSE)
-psq_check_and_report_tool_version (PREFIX 
-                                   ${CUSTOM_EXECUTABLE_HIGHER_VERSION}
-                                   SUCCESS)
+function (run_find)
 
-assert_false (${SUCCESS})
+    set (SUCCESS TRUE)
+    set (PREFIX_FIND_VERSION_EXACT TRUE)
+    set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_EXACT_VERSION})
+    set (PREFIX_FIND_QUIETLY FALSE)
+    psq_check_and_report_tool_version (PREFIX
+                                       ${CUSTOM_EXECUTABLE_HIGHER_VERSION}
+                                       REQUIRED_VARS SUCCESS)
+
+endfunction (run_find)
+
+run_find ()
+assert_variable_is_not_defined (SUCCESS)

@@ -6,9 +6,15 @@
 include (ToolingFindPackageUtil)
 include (CMakeUnit)
 
-set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_LOWER_VERSION})
-psq_check_and_report_tool_version (PREFIX 
-                                   ${CUSTOM_EXECUTABLE_HIGHER_VERSION}
-                                   SUCCESS)
+function (run_find)
 
+    set (SUCCESS TRUE)
+    set (PREFIX_FIND_VERSION ${CUSTOM_EXECUTABLE_LOWER_VERSION})
+    psq_check_and_report_tool_version (PREFIX
+                                       ${CUSTOM_EXECUTABLE_HIGHER_VERSION}
+                                       REQUIRED_VARS SUCCESS)
+
+endfunction (run_find)
+
+run_find ()
 assert_true (${SUCCESS})

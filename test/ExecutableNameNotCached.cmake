@@ -17,7 +17,7 @@ psq_find_tool_executable (${OTHER_EXECUTABLE_NAME} OTHER_EXECUTABLE
 get_filename_component (OTHER_EXEC_BASENAME ${OTHER_EXECUTABLE} NAME)
 get_filename_component (CUSTOM_EXEC_BASENAME ${CUSTOM_EXECUTABLE} NAME)
 
-assert_variable_is (${OTHER_EXEC_BASENAME} STRING EQUAL
+assert_variable_is (OTHER_EXEC_BASENAME STRING EQUAL
                     "other_sample_executable")
-assert_variable_is (${CUSTOM_EXEC_BASENAME} STRING EQUAL
+assert_variable_is (CUSTOM_EXEC_BASENAME STRING EQUAL
                     "sample_executable")
