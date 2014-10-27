@@ -6,13 +6,17 @@
 include (ToolingFindPackageUtil)
 include (CMakeUnit)
 
+file (READ ${CMAKE_CFG_INTDIR_OUTPUT_FILE} CMAKE_CFG_INTDIR)
+
 psq_find_tool_executable (${CUSTOM_EXECUTABLE_NAME} CUSTOM_EXECUTABLE
-                          CUSTOM_PATHS ${CUSTOM_EXECUTABLE_INSTALL_ROOT}
-                          PATH_SUFFIXES sample_executable)
+                          CUSTOM_PATHS
+                          ${CUSTOM_EXECUTABLE_INSTALL_ROOT}
+                          PATH_SUFFIXES sample_executable/${CMAKE_CFG_INTDIR})
 
 psq_find_tool_executable (${OTHER_EXECUTABLE_NAME} OTHER_EXECUTABLE
                           CUSTOM_PATHS ${OTHER_EXECUTABLE_INSTALL_ROOT}
-                          PATH_SUFFIXES other_sample_executable)
+                          PATH_SUFFIXES
+                          other_sample_executable/${CMAKE_CFG_INTDIR})
 
 get_filename_component (OTHER_EXEC_BASENAME ${OTHER_EXECUTABLE} NAME)
 get_filename_component (CUSTOM_EXEC_BASENAME ${CUSTOM_EXECUTABLE} NAME)

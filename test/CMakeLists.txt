@@ -39,6 +39,10 @@ set (CMAKE_MODULE_PATH
 
 include (CMakeUnitRunner)
 
+set (CMAKE_CFG_INTDIR_OUTPUT_FILE
+     ${CMAKE_CURRENT_BINARY_DIR}/CMakeCfgIntDir.txt
+     CACHE STRING "" FORCE)
+
 bootstrap_cmake_unit (VARIABLES CMAKE_MODULE_PATH
                                 CUSTOM_EXECUTABLE_NAME
                                 CUSTOM_EXECUTABLE_INSTALL_ROOT
@@ -47,7 +51,8 @@ bootstrap_cmake_unit (VARIABLES CMAKE_MODULE_PATH
                                 CUSTOM_EXECUTABLE_LOCATION
                                 CUSTOM_EXECUTABLE_LOWER_VERSION
                                 CUSTOM_EXECUTABLE_HIGHER_VERSION
-                                CUSTOM_EXECUTABLE_EXACT_VERSION)
+                                CUSTOM_EXECUTABLE_EXACT_VERSION
+                                CMAKE_CFG_INTDIR_OUTPUT_FILE)
 
 add_cmake_test (CheckAndReportToolVersionWithinRange)
 add_cmake_test (FindExecutableInstallationRoot)
@@ -78,3 +83,18 @@ add_cmake_build_test (ReportToolNotFoundIfQuietAndRequired
 
 add_subdirectory (sample_executable)
 add_subdirectory (other_sample_executable)
+
+# Add a custom target which prints out the CMAKE_CFG_INTDIR for the
+# current generator to CMAKE_CFG_INTDIR_OUTPUT_FILE
+set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT
+     ${CMAKE_CURRENT_BINARY_DIR}/WriteCfgIntDir.cmake)
+set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS
+     "file (WRITE ${CMAKE_CFG_INTDIR_OUTPUT_FILE} \"\${INTDIR}\")\n")
+file (WRITE ${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}
+      "${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS}")
+add_custom_command (OUTPUT ${CMAKE_CFG_INTDIR_OUTPUT_FILE}
+                    COMMAND ${CMAKE_COMMAND}
+                    -DINTDIR=${CMAKE_CFG_INTDIR}
+                    -P ${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT})
+add_custom_target (write_cfg_int_dir ALL
+                   SOURCES ${CMAKE_CFG_INTDIR_OUTPUT_FILE})
