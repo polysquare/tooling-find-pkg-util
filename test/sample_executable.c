@@ -1,3 +1,11 @@
+/*
+ * /test/sample_executable.c
+ *
+ * Executable that prints a version on being passed --version.
+ *
+ * See /LICENCE.md for Copyright information
+ */
+
 #include <string.h>
 #include <stdio.h>
 

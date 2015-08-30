@@ -1,0 +1,10 @@
+cmake
+CMAKE_CFG_INTDIR
+CMAKE_CFG_INTDIR_OUTPUT_FILE
+find_package
+executables
+polysquare
+subdirectory
+substring
+unsanitized
+util
