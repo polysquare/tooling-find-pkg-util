@@ -48,9 +48,9 @@ function (psq_print_if_not_quiet PREFIX)
 
             message (STATUS "${MSG}")
 
-        endif (NOT ${PREFIX}_FIND_QUIETLY)
+        endif ()
 
-    endif (DEPEND_VARS_STRING)
+    endif ()
 
 endfunction ()
 
@@ -67,7 +67,7 @@ function (psq_report_not_found_if_not_quiet PREFIX VARIABLE)
 
         psq_print_if_not_quiet (${PREFIX} MSG ${ARGN})
 
-    endif (NOT ${VARIABLE})
+    endif ()
 
 endfunction ()
 
@@ -93,9 +93,9 @@ function (_psq_find_tool_executable_in_custom_paths EXECUTABLE_TO_FIND
 
         set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
-    endif (PATH_TO_EXECUTABLE)
+    endif ()
 
-endfunction (_psq_find_tool_executable_in_custom_paths)
+endfunction ()
 
 function (_psq_find_tool_executable_in_system_paths EXECUTABLE_TO_FIND
                                                     PATH_RETURN)
@@ -107,9 +107,9 @@ function (_psq_find_tool_executable_in_system_paths EXECUTABLE_TO_FIND
 
         set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
-    endif (PATH_TO_EXECUTABLE)
+    endif ()
 
-endfunction (_psq_find_tool_executable_in_system_paths)
+endfunction ()
 
 # psq_find_tool_executable
 #
@@ -140,22 +140,22 @@ function (psq_find_tool_executable EXECUTABLE_TO_FIND PATH_RETURN)
                                                    PATH_SUFFIXES
                                                    ${PATH_SUFFIXES})
 
-    endif (FIND_TOOL_EXECUTABLE_CUSTOM_PATHS)
+    endif ()
 
     if (NOT PATH_TO_EXECUTABLE)
 
         _psq_find_tool_executable_in_system_paths (${EXECUTABLE_TO_FIND}
                                                    PATH_TO_EXECUTABLE)
 
-    endif (NOT PATH_TO_EXECUTABLE)
+    endif ()
 
     if (PATH_TO_EXECUTABLE)
 
         set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
-    endif (PATH_TO_EXECUTABLE)
+    endif ()
 
-endfunction (psq_find_tool_executable)
+endfunction ()
 
 # psq_find_tool_extract_version
 #
@@ -200,7 +200,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
 
         set (FIND_TOOL_VERSION_TO_END ${TOOL_VERSION_OUTPUT})
 
-    endif (FIND_TOOL_VERSION_HEADER)
+    endif ()
 
     if (FIND_TOOL_VERSION_END_TOKEN)
 
@@ -216,7 +216,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
 
         set (FIND_TOOL_VERSION ${FIND_TOOL_VERSION_TO_END})
 
-    endif (FIND_TOOL_VERSION_END_TOKEN)
+    endif ()
 
     if (NOT FIND_TOOL_VERSION)
 
@@ -227,7 +227,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
                              "'${FIND_TOOL_VERSION_END_TOKEN}'. The output to "
                              "scan was ${TOOL_VERSION_OUTPUT}")
 
-    endif (NOT FIND_TOOL_VERSION)
+    endif ()
 
     # Strip out any \n
     string (REPLACE "\n" "" FIND_TOOL_VERSION "${FIND_TOOL_VERSION}")
@@ -272,9 +272,9 @@ macro (psq_check_and_report_tool_version PREFIX VERSION)
 
         endforeach ()
 
-    endif (${PREFIX}_FOUND)
+    endif ()
 
-endmacro (psq_check_and_report_tool_version)
+endmacro ()
 
 # psq_find_executable_installation_root
 #
@@ -323,7 +323,7 @@ function (psq_find_executable_installation_root TOOL_EXECUTABLE
 
     set (${INSTALL_ROOT_RETURN} ${TOOL_INSTALL_ROOT} PARENT_SCOPE)
 
-endfunction (psq_find_executable_installation_root)
+endfunction ()
 
 # psq_find_path_in_installation_root
 #
@@ -348,6 +348,6 @@ function (psq_find_path_in_installation_root INSTALL_ROOT
         set (${PATH_RETURN} "${_PATH}/${SUBDIRECTORY_TO_FIND}" PARENT_SCOPE)
         unset (_PATH CACHE)
 
-    endif (_PATH)
+    endif ()
 
-endfunction (psq_find_path_in_installation_root)
+endfunction ()
