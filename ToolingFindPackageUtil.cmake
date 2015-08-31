@@ -317,8 +317,6 @@ function (psq_find_executable_installation_root TOOL_EXECUTABLE
     math (EXPR TOOL_EXEC_PREFIX_LENGTH
           "${TOOL_EXEC_PATH_LENGTH} - ${TOOL_EXEC_SUBDIR_LENGTH}")
 
-    message (STATUS "Getting substring 0 ${TOOL_EXEC_PREFIX_LENGTH} of ${TOOL_EXEC_PATH} - ${PREFIXED_PATH}")
-
     # Then we get the prefix substring
     string (SUBSTRING "${TOOL_EXEC_PATH}" 0 ${TOOL_EXEC_PREFIX_LENGTH}
             TOOL_INSTALL_ROOT)
