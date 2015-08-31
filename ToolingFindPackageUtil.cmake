@@ -1,9 +1,12 @@
 # /ToolingFindPackageUtil.cmake
 #
 # Some helper functions for using find_package to find an executable tool to
-# run over a codebase. Sets up and verifies versions, requirements, etc.
+# run over a project. Sets up and verifies versions, requirements, etc.
 #
-# See LICENCE.md for Copyright information
+# See /LICENCE.md for Copyright information
+
+include ("smspillaz/cmake-include-guard/IncludeGuard")
+cmake_include_guard (SET_MODULE_PATH)
 
 include (CMakeParseArguments)
 include (FindPackageHandleStandardArgs)
@@ -81,13 +84,14 @@ function (_psq_find_tool_executable_in_custom_paths EXECUTABLE_TO_FIND
     unset (PATH_TO_EXECUTABLE CACHE)
     find_program (PATH_TO_EXECUTABLE
                   ${EXECUTABLE_TO_FIND}
-                  PATHS ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS}
-                  PATH_SUFFIXES ${FIND_TOOL_EXECUTABLE_PATH_SUFFIXES}
+                  PATHS ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS_PATHS}
+                  PATH_SUFFIXES
+                  ${FIND_TOOL_EXECUTABLE_CUSTOM_PATHS_PATH_SUFFIXES}
                   NO_DEFAULT_PATH)
 
     if (PATH_TO_EXECUTABLE)
 
-        set (${PATH_RETURN} ${PATH_TO_EXECUTABLE} PARENT_SCOPE)
+        set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
     endif (PATH_TO_EXECUTABLE)
 
@@ -101,7 +105,7 @@ function (_psq_find_tool_executable_in_system_paths EXECUTABLE_TO_FIND
 
     if (PATH_TO_EXECUTABLE)
 
-        set (${PATH_RETURN} ${PATH_TO_EXECUTABLE} PARENT_SCOPE)
+        set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
     endif (PATH_TO_EXECUTABLE)
 
@@ -147,7 +151,7 @@ function (psq_find_tool_executable EXECUTABLE_TO_FIND PATH_RETURN)
 
     if (PATH_TO_EXECUTABLE)
 
-        set (${PATH_RETURN} ${PATH_TO_EXECUTABLE} PARENT_SCOPE)
+        set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
 
     endif (PATH_TO_EXECUTABLE)
 
@@ -175,20 +179,22 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
                            ""
                            ${ARGN})
 
-    execute_process (COMMAND ${TOOL_EXECUTABLE}
+    execute_process (COMMAND "${TOOL_EXECUTABLE}"
                      ${FIND_TOOL_VERSION_ARG}
                      OUTPUT_VARIABLE TOOL_VERSION_OUTPUT)
 
     if (FIND_TOOL_VERSION_HEADER)
 
-        string (FIND "${TOOL_VERSION_OUTPUT}" "${FIND_TOOL_VERSION_HEADER}" 
+        string (FIND "${TOOL_VERSION_OUTPUT}" "${FIND_TOOL_VERSION_HEADER}"
                 FIND_TOOL_VHEADER_LOC)
         string (LENGTH "${FIND_TOOL_VERSION_HEADER}"
                 FIND_TOOL_VHEADER_SIZE)
         math (EXPR FIND_TOOL_VERSION_START
               "${FIND_TOOL_VHEADER_LOC} + ${FIND_TOOL_VHEADER_SIZE}")
         string (SUBSTRING "${TOOL_VERSION_OUTPUT}"
-                ${FIND_TOOL_VERSION_START} -1 FIND_TOOL_VERSION_TO_END)
+                ${FIND_TOOL_VERSION_START}
+                -1
+                FIND_TOOL_VERSION_TO_END)
 
     else (FIND_TOOL_VERSION_HEADER)
 
@@ -198,10 +204,13 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
 
     if (FIND_TOOL_VERSION_END_TOKEN)
 
-        string (FIND "${FIND_TOOL_VERSION_TO_END}" "${FIND_TOOL_VERSION_END_TOKEN}"
+        string (FIND "${FIND_TOOL_VERSION_TO_END}"
+                     "${FIND_TOOL_VERSION_END_TOKEN}"
                 FIND_TOOL_RETURN_LOC)
-        string (SUBSTRING "${FIND_TOOL_VERSION_TO_END}" 
-                0 ${FIND_TOOL_RETURN_LOC} FIND_TOOL_VERSION)
+        string (SUBSTRING "${FIND_TOOL_VERSION_TO_END}"
+                0
+                ${FIND_TOOL_RETURN_LOC}
+                FIND_TOOL_VERSION)
 
     else (FIND_TOOL_VERSION_END_TOKEN)
 
@@ -280,8 +289,8 @@ endmacro (psq_check_and_report_tool_version)
 function (psq_find_executable_installation_root TOOL_EXECUTABLE
                                                 INSTALL_ROOT_RETURN)
 
-    get_filename_component (TOOL_EXEC_PATH ${TOOL_EXECUTABLE} ABSOLUTE)
-    get_filename_component (TOOL_EXEC_BASE ${TOOL_EXECUTABLE} NAME)
+    get_filename_component (TOOL_EXEC_PATH "${TOOL_EXECUTABLE}" ABSOLUTE)
+    get_filename_component (TOOL_EXEC_BASE "${TOOL_EXECUTABLE}" NAME)
 
     set (INSTALL_ROOT_SINGLEVAR_ARGS PREFIX_SUBDIRECTORY)
     cmake_parse_arguments (INSTALL_ROOT
@@ -290,21 +299,28 @@ function (psq_find_executable_installation_root TOOL_EXECUTABLE
                            ""
                            ${ARGN})
 
-    # Strip unsanitised string
-    string (STRIP ${TOOL_EXEC_PATH} TOOL_EXEC_PATH)
+    # Strip unsanitized string
+    string (STRIP "${TOOL_EXEC_PATH}" TOOL_EXEC_PATH)
 
     # First get the tool path lengths
     string (LENGTH "${TOOL_EXEC_PATH}"
             TOOL_EXEC_PATH_LENGTH)
-    string (LENGTH "/${INSTALL_ROOT_PREFIX_SUBDIRECTORY}/${TOOL_EXEC_BASE}"
-            TOOL_EXEC_SUBDIR_LENGTH)
+    if (INSTALL_ROOT_PREFIX_SUBDIRECTORY)
+
+        set (PREFIXED_PATH "/${INSTALL_ROOT_PREFIX_SUBDIRECTORY}/")
+
+    endif ()
+    set (PREFIXED_PATH "${PREFIXED_PATH}${TOOL_EXEC_BASE}")
+    string (LENGTH "${PREFIXED_PATH}" TOOL_EXEC_SUBDIR_LENGTH)
 
     # Then determine how long the prefix is
     math (EXPR TOOL_EXEC_PREFIX_LENGTH
           "${TOOL_EXEC_PATH_LENGTH} - ${TOOL_EXEC_SUBDIR_LENGTH}")
 
+    message (STATUS "Getting substring 0 ${TOOL_EXEC_PREFIX_LENGTH} of ${TOOL_EXEC_PATH} - ${PREFIXED_PATH}")
+
     # Then we get the prefix substring
-    string (SUBSTRING ${TOOL_EXEC_PATH} 0 ${TOOL_EXEC_PREFIX_LENGTH}
+    string (SUBSTRING "${TOOL_EXEC_PATH}" 0 ${TOOL_EXEC_PREFIX_LENGTH}
             TOOL_INSTALL_ROOT)
 
     set (${INSTALL_ROOT_RETURN} ${TOOL_INSTALL_ROOT} PARENT_SCOPE)
@@ -313,7 +329,7 @@ endfunction (psq_find_executable_installation_root)
 
 # psq_find_path_in_installation_root
 #
-# Places the full path to SUBDIRECTORY_TO_FIND in PATH_RETURN if found in 
+# Places the full path to SUBDIRECTORY_TO_FIND in PATH_RETURN if found in
 # INSTALL_ROOT
 #
 # INSTALL_ROOT: The directory to search for
@@ -331,7 +347,7 @@ function (psq_find_path_in_installation_root INSTALL_ROOT
     if (_PATH)
 
         mark_as_advanced (_PATH)
-        set (${PATH_RETURN} ${_PATH}/${SUBDIRECTORY_TO_FIND} PARENT_SCOPE)
+        set (${PATH_RETURN} "${_PATH}/${SUBDIRECTORY_TO_FIND}" PARENT_SCOPE)
         unset (_PATH CACHE)
 
     endif (_PATH)

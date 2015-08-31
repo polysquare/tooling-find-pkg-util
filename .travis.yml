@@ -1,23 +1,35 @@
 language: cpp
+sudo: false
+cache:
+  directories:
+  - container
 env:
-  - CMAKE_GENERATOR="Unix Makefiles"
-  - CMAKE_GENERATOR="Ninja"
-before_install:
-  - git submodule update --init --recursive
-  - sudo apt-add-repository -y ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq `cat DEPENDENCIES`
-  - cmake --version
-  # Workaround to get Ninja to display verbose output
-  - if [[ $CMAKE_GENERATOR == "Ninja" ]] ; then
-     echo -e '!#/bin/bash\n/usr/bin/ninja -v $@' > ninja;
-     chmod +x ninja;
-     export PATH=`pwd`:${PATH};
-    fi
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+install:
+- eval $(curl -LSs --retry 100 --connect-timeout 3 public-travis-scripts.polysquare.org/bootstrap.py
+  | python /dev/stdin -d container -s setup/bii/setup.py -e bash -p /dev/stdout --cmake-version
+  ${CMAKE_VERSION})
 script:
-  - mkdir -p test/build
-  - pushd test/build
-  - cmake .. &&
-    cmake --build . --clean-first &&
-    ctest --output-on-failure &&
-    popd
+- polysquare_run check/bii/check.py ${COVERAGE} --cmake-namespace psq --generator
+  "${CMAKE_GENERATOR}" --block "smspillaz/tooling-find-pkg-util"
+before_cache:
+- polysquare_cleanup
+after_success:
+- polysquare_run coverage/bii/coverage.py
+before_deploy:
+- polysquare_run deploy/bii/deploy.py
+deploy:
+  provider: biicode
+  skip_cleanup: true
+  user:
+    secure: eB4MuA4p5Jwnx77A6/qvp8wG69XBaJ3rBeFrz66XDk1ct13ka7anKv1t58Yctm9FApUctn4qmrHWd/cx6WCxRA1N8hQ8rCQt40fykvJFpgET340WDszFawJFA3SecRA1UY6dFQfQdZooCuNXbzCI4KO6hF7nB8h8sjPy7K11elY=
+  password:
+    secure: bPzfv8RD+9V0+4vOLG3i/e3KgI5FbMJjZrhjBcdV//1ZggaolSD/72Jdgnd5DdkVkMi/8jteTZl2ke12Ck4dHm2jzSK1/TcoR31qDkkc060VhGbycL7ciskcXuOuuT7KStBZjxYiilYIAxt3cjZQpnodgbH7zxD+LNDSBXCg2gM=
+  on:
+    repo: polysquare/tooling-find-pkg-util
+    branch: master
+    condition: ${DEPLOY} = 1
