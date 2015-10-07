@@ -4,6 +4,8 @@
 #
 # See /LICENCE.md for Copyright information
 
+include ("smspillaz/cmake-unit/CMakeUnit")
+
 add_executable (other_sample_executable
                 other_sample_executable.c)
 add_executable (sample_executable
@@ -15,8 +17,9 @@ set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT
      "${CMAKE_CURRENT_BINARY_DIR}/WriteCfgIntDir.cmake")
 set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS
      "file (WRITE ${CMAKE_CFG_INTDIR_OUTPUT_FILE} \"\${INTDIR}\")\n")
-file (WRITE ${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}
-      "${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS}")
+cmake_unit_write_if_newer ("${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}"
+                           "${CMAKE_CURRENT_LIST_FILE}"
+                           "${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS}")
 add_custom_command (OUTPUT "${CMAKE_CFG_INTDIR_OUTPUT_FILE}"
                     COMMAND
                     "${CMAKE_COMMAND}"
