@@ -42,7 +42,7 @@ function (psq_print_if_not_quiet PREFIX)
 
         find_package_message (${PREFIX} "${MSG}" "${DEPEND_VARS_STRING}")
 
-    else (DEPEND_VARS_STRING)
+    else ()
 
         if (NOT ${PREFIX}_FIND_QUIETLY)
 
@@ -196,7 +196,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
                 -1
                 FIND_TOOL_VERSION_TO_END)
 
-    else (FIND_TOOL_VERSION_HEADER)
+    else ()
 
         set (FIND_TOOL_VERSION_TO_END ${TOOL_VERSION_OUTPUT})
 
@@ -212,7 +212,7 @@ function (psq_find_tool_extract_version TOOL_EXECUTABLE VERSION_RETURN)
                 ${FIND_TOOL_RETURN_LOC}
                 FIND_TOOL_VERSION)
 
-    else (FIND_TOOL_VERSION_END_TOKEN)
+    else ()
 
         set (FIND_TOOL_VERSION ${FIND_TOOL_VERSION_TO_END})
 
