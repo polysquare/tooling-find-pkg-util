@@ -238,20 +238,8 @@ function (psq_test_find_executable_installation_root)
         set (CUSTOM_EXEC
              "${CUSTOM_EXEC_LOCATION}/${CUSTOM_EXEC_NAME}")
 
-        if (NOT _INVOKING_RUNTIME_OUTPUT_DIR)
-
-            set (PREFIX_SUBDIRECTORY "sample_executable")
-
-        else ()
-
-            unset (PREFIX_SUBDIRECTORY)
-
-        endif ()
-
         psq_find_executable_installation_root ("${CUSTOM_EXEC}"
-                                               INSTALL_ROOT
-                                               PREFIX_SUBDIRECTORY
-                                               "${PREFIX_SUBDIRECTORY}")
+                                               INSTALL_ROOT)
         cmake_unit_assert_that (INSTALL_ROOT
                                 compare_as STRING EQUAL
                                 ${CUSTOM_EXEC_ROOT})
