@@ -48,9 +48,9 @@ else ()
     set (CUSTOM_EXEC_LOCATION
          "${CMAKE_UNIT_INVOKING_BINARY_DIR}/test")
     set (CUSTOM_EXEC_ROOT
-         "${CMAKE_UNIT_INVOKING_BINARY_DIR}/test")
+         "${CMAKE_UNIT_INVOKING_BINARY_DIR}/test/")
     set (OTHER_EXEC_ROOT
-         "${CMAKE_UNIT_INVOKING_BINARY_DIR}/test")
+         "${CMAKE_UNIT_INVOKING_BINARY_DIR}/test/")
 
 endif ()
 
