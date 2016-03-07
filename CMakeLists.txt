@@ -3,30 +3,18 @@
 # Main entry point for tooling-find-pkg-util tests.
 #
 # See /LICENCE.md for Copyright information
-
-if (NOT CMAKE_SCRIPT_MODE_FILE)
-
-    project (PolysquareToolingFindPackageUtilTests NONE)
-    set (NEW_POLICIES CMP0025 CMP0056)
-
-    foreach (POLICY ${NEW_POLICIES})
-
-        if (POLICY ${POLICY})
-
-            cmake_policy (SET ${POLICY} NEW)
-
-        endif ()
-
-    endforeach ()
-
-endif ()
+include ("${CMAKE_CURRENT_LIST_DIR}/conanbuildinfo.cmake")
+set (CMAKE_MODULE_PATH
+     "${CMAKE_CURRENT_LIST_DIR}"
+     ${CONAN_CMAKE_MODULE_PATH}  # NOLINT:correctness/quotes
+     ${CMAKE_MODULE_PATH})  # NOLINT:correctness/quotes
 
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-include ("smspillaz/cmake-unit/CMakeUnitRunner")
-include ("smspillaz/cmake-unit/CMakeUnit")
+include ("cmake/cmake-unit/CMakeUnitRunner")
+include ("cmake/cmake-unit/CMakeUnit")
 include (ToolingFindPackageUtil)
 
 if (CMAKE_UNIT_INVOKING_BINARY_DIR)
@@ -488,9 +476,3 @@ endif ()
 cmake_unit_init (NAMESPACE psq
                  COVERAGE_FILES
                  "${CMAKE_CURRENT_LIST_DIR}/ToolingFindPackageUtil.cmake")
-
-if (BIICODE)
-
-    add_bii_targets ()
-
-endif ()

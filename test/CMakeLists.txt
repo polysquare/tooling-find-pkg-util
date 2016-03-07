@@ -4,7 +4,7 @@
 #
 # See /LICENCE.md for Copyright information
 
-include ("smspillaz/cmake-unit/CMakeUnit")
+include ("cmake/cmake-unit/CMakeUnit")
 
 add_executable (other_sample_executable
                 other_sample_executable.c)
