@@ -4,32 +4,40 @@ cache:
   directories:
   - container
 env:
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
-- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
-- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
-- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+  matrix:
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+  global:
+  - secure: Pn8V9F8EsH3UB6EVXpbpzOgwHI9Kn3ItaaSEGa28z0Cy/SriLfXDFcZ7chZFGPdozXJ3PPG7hEIQGQYQfBF+2sqF677p9QmIYI7QefA8MlnugfP7yLbanSB4AGH/iyoA5F3ppBQU6SbAS/M0An51c9OglDCc9XmJdZWFSZSDB7E=
+  - secure: T8DoqHSDJhSqqRQro/5PVe7BgiIR1mc164lYlbR+v45UymXanugRRvWkt/s9/gVX+l/8bdLr7IZn8dZwt2w3Zs9n9crubH9RAnP0LVGmIUbOw71IzhnGpOGqteiR5ir/aRZWmKYwmImg4NJbHtdhzBToxFp/BpPkrD8L4qrls4E=
+  - secure: oD9t8yNr/G62hWDR1svq1NMIepBCHPffjYlhI5xNNnw9dcsTU46LDG4lWOirOv6pD0GBuI17Dbu+rn2crhavsSkMCs2oSCC8V7W+zlXwPzAQJ7BHJUu8KBoRPOaEmzzbHEtkp5oIyxPgVdHfJQMgP5YLCfIeHkE3NSqwaQXTWnQ=
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    packages:
+    - python3.4-dev
 install:
 - eval $(curl -LSs --retry 100 --connect-timeout 3 public-travis-scripts.polysquare.org/bootstrap.py
-  | python /dev/stdin -d container -s setup/bii/setup.py -e bash -p /dev/stdout --cmake-version
-  ${CMAKE_VERSION})
+  | python /dev/stdin -d container -s setup/conan/setup.py -e bash -p /dev/stdout
+  --cmake-version ${CMAKE_VERSION})
 script:
-- polysquare_run check/bii/check.py ${COVERAGE} --cmake-namespace psq --generator
-  "${CMAKE_GENERATOR}" --block "smspillaz/tooling-find-pkg-util"
+- polysquare_run check/conan/check.py ${COVERAGE} --cmake-namespace psq --generator
+  "${CMAKE_GENERATOR}"
 before_cache:
 - polysquare_cleanup
 after_success:
-- polysquare_run coverage/bii/coverage.py
+- polysquare_run coverage/cmake/coverage.py
 before_deploy:
-- polysquare_run deploy/bii/deploy.py
+- polysquare_run deploy/conan/before_deploy.py --package="tooling-find-pkg-util"
 deploy:
-  provider: biicode
+  provider: script
   skip_cleanup: true
-  user:
-    secure: eB4MuA4p5Jwnx77A6/qvp8wG69XBaJ3rBeFrz66XDk1ct13ka7anKv1t58Yctm9FApUctn4qmrHWd/cx6WCxRA1N8hQ8rCQt40fykvJFpgET340WDszFawJFA3SecRA1UY6dFQfQdZooCuNXbzCI4KO6hF7nB8h8sjPy7K11elY=
-  password:
-    secure: bPzfv8RD+9V0+4vOLG3i/e3KgI5FbMJjZrhjBcdV//1ZggaolSD/72Jdgnd5DdkVkMi/8jteTZl2ke12Ck4dHm2jzSK1/TcoR31qDkkc060VhGbycL7ciskcXuOuuT7KStBZjxYiilYIAxt3cjZQpnodgbH7zxD+LNDSBXCg2gM=
+  script: "./travis-deploy"
   on:
     repo: polysquare/tooling-find-pkg-util
     branch: master
-    condition: ${DEPLOY} = 1
+    condition: "${DEPLOY} = 1"
