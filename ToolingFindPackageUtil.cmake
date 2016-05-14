@@ -92,6 +92,7 @@ function (_psq_find_tool_executable_in_custom_paths EXECUTABLE_TO_FIND
     if (PATH_TO_EXECUTABLE)
 
         set (${PATH_RETURN} "${PATH_TO_EXECUTABLE}" PARENT_SCOPE)
+        unset (PATH_TO_EXECUTABLE CACHE)
 
     endif ()
 
@@ -248,7 +249,7 @@ endfunction ()
 # VERSION: The detected tool version
 # REQUIRED_VARS : Required variables, set in parent scope if present
 #                 Must specify at least one.
-macro (psq_check_and_report_tool_version PREFIX VERSION)
+function (psq_check_and_report_tool_version PREFIX VERSION)
 
     string (STRIP "${VERSION}" VERSION)
 
@@ -268,13 +269,13 @@ macro (psq_check_and_report_tool_version PREFIX VERSION)
 
         foreach (VARIABLE ${_PSQ_CHECK_${PREFIX}_REQUIRED_VARS})
 
-            set (${VARIABLE} ${${VARIABLE}} PARENT_SCOPE)
+            set (${VARIABLE} ${${VARIABLE}} CACHE STRING "" FORCE)
 
         endforeach ()
 
     endif ()
 
-endmacro ()
+endfunction ()
 
 # psq_find_executable_installation_root
 #
