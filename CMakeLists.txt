@@ -286,7 +286,7 @@ function (psq_test_find_tool_executable_in_custom_path)
                                 "${NONNORMALIZED_EXECPTED_EXECUTABLE_PATH}"
                                 REALPATH)
         set (SUFFIX "${CMAKE_EXECUTABLE_SUFFIX}")
-        cmake_unit_assert_that (PATH_TO_EXECUTABLE
+        cmake_unit_assert_that (CUSTOM_EXEC
                                 compare_as STRING EQUAL
                                 "${EXPECTED_EXECUTABLE_PATH}${SUFFIX}")
 
