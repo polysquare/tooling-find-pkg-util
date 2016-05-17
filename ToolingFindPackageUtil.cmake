@@ -249,7 +249,7 @@ endfunction ()
 # VERSION: The detected tool version
 # REQUIRED_VARS : Required variables, set in parent scope if present
 #                 Must specify at least one.
-function (psq_check_and_report_tool_version PREFIX VERSION)
+macro (psq_check_and_report_tool_version PREFIX VERSION)
 
     string (STRIP "${VERSION}" VERSION)
 
@@ -275,7 +275,7 @@ function (psq_check_and_report_tool_version PREFIX VERSION)
 
     endif ()
 
-endfunction ()
+endmacro ()
 
 # psq_find_executable_installation_root
 #
