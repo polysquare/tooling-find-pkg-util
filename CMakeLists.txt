@@ -13,8 +13,7 @@ cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-include ("cmake/cmake-unit/CMakeUnitRunner")
-include ("cmake/cmake-unit/CMakeUnit")
+include ("cmake/cmake-module-common/Common")
 include (ToolingFindPackageUtil)
 
 if (CMAKE_UNIT_INVOKING_BINARY_DIR)
@@ -461,6 +460,13 @@ if (NOT CMAKE_SCRIPT_MODE_FILE AND
 
 endif ()
 
-cmake_unit_init (NAMESPACE psq
-                 COVERAGE_FILES
-                 "${CMAKE_CURRENT_LIST_DIR}/ToolingFindPackageUtil.cmake")
+set (CMAKE_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/ToolingFindPackageUtil.cmake"
+     "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+set (MARKDOWN_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/LICENSE.md"
+     "${CMAKE_CURRENT_LIST_DIR}/README.md")
+
+cmake_module_add_common_targets (NAMESPACE "psq"
+                                 CMAKE_FILES ${CMAKE_FILES}
+                                 DOCUMENTATION_FILES ${MARKDOWN_FILES})
