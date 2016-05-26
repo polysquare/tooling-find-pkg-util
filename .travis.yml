@@ -3,13 +3,21 @@ sudo: false
 cache:
   directories:
   - container
+matrix:
+  include:
+  - os: linux
+    env: CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+  - os: linux
+    env: CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+  - os: linux
+    env: CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+  - os: linux
+    env: CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+  - os: linux
+    env: CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+  - os: osx
+    env: CMAKE_GENERATOR="Xcode" CMAKE_VERSION="latest"
 env:
-  matrix:
-  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
-  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
-  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
-  - CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
-  - CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
   global:
   - secure: Pn8V9F8EsH3UB6EVXpbpzOgwHI9Kn3ItaaSEGa28z0Cy/SriLfXDFcZ7chZFGPdozXJ3PPG7hEIQGQYQfBF+2sqF677p9QmIYI7QefA8MlnugfP7yLbanSB4AGH/iyoA5F3ppBQU6SbAS/M0An51c9OglDCc9XmJdZWFSZSDB7E=
   - secure: T8DoqHSDJhSqqRQro/5PVe7BgiIR1mc164lYlbR+v45UymXanugRRvWkt/s9/gVX+l/8bdLr7IZn8dZwt2w3Zs9n9crubH9RAnP0LVGmIUbOw71IzhnGpOGqteiR5ir/aRZWmKYwmImg4NJbHtdhzBToxFp/BpPkrD8L4qrls4E=
