@@ -18,6 +18,7 @@ if (COMMAND cmake_unit_write_if_newer)
     set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT
          "${CMAKE_CURRENT_BINARY_DIR}/WriteCfgIntDir.cmake")
     set (WRITE_TO_CFG_OUTPUT_FILE_SCRIPT_CONTENTS
+         "set (INTDIR \"\" CACHE STRING \"\")\n"
          "file (WRITE ${CMAKE_CFG_INTDIR_OUTPUT_FILE} \"\${INTDIR}\")\n")
     cmake_unit_write_if_newer ("${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}"
                                "${CMAKE_CURRENT_LIST_FILE}"
@@ -25,9 +26,9 @@ if (COMMAND cmake_unit_write_if_newer)
     add_custom_command (OUTPUT "${CMAKE_CFG_INTDIR_OUTPUT_FILE}"
                         COMMAND
                         "${CMAKE_COMMAND}"
+                        "-DINTDIR=\"${CMAKE_CFG_INTDIR}\""
                         -P
-                        "${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}"
-                        "-DINTDIR=\"${CMAKE_CFG_INTDIR}\"")
+                        "${WRITE_TO_CFG_OUTPUT_FILE_SCRIPT}")
     add_custom_target (write_cfg_int_dir ALL
                        SOURCES "${CMAKE_CFG_INTDIR_OUTPUT_FILE}")
 
