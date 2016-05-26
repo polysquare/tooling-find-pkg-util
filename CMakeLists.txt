@@ -205,13 +205,13 @@ function (psq_test_executable_name_not_cached)
                                   CUSTOM_PATHS ${CUSTOM_EXEC_ROOT}
                                                "${_INVOKING_RUNTIME_OUTPUT_DIR}"
                                   PATH_SUFFIXES
-                                  "sample_executable/${CMAKE_CFG_INTDIR}")
+                                  "${CMAKE_CFG_INTDIR}/")
         psq_find_tool_executable (${OTHER_EXEC_NAME}
                                   OTHER_EXEC
                                   CUSTOM_PATHS ${OTHER_EXEC_ROOT}
                                                "${_INVOKING_RUNTIME_OUTPUT_DIR}"
                                   PATH_SUFFIXES
-                                  "other_sample_executable/${CMAKE_CFG_INTDIR}")
+                                  "${CMAKE_CFG_INTDIR}/")
 
         get_filename_component (OTHER_EXEC_BASENAME "${OTHER_EXEC}" NAME)
         get_filename_component (CUSTOM_EXEC_BASENAME "${CUSTOM_EXEC}" NAME)
@@ -278,7 +278,7 @@ function (psq_test_find_tool_executable_in_custom_path)
                                   CUSTOM_PATHS ${CUSTOM_EXEC_ROOT}
                                                "${_INVOKING_RUNTIME_OUTPUT_DIR}"
                                   PATH_SUFFIXES
-                                  "sample_executable/${CMAKE_CFG_INTDIR}")
+                                  "${INTDIR}/")
         set (NONNORMALIZED_EXECPTED_EXECUTABLE_PATH
              "${CUSTOM_EXEC_LOCATION}/${INTDIR}/${CUSTOM_EXEC_NAME}")
         get_filename_component (EXPECTED_EXECUTABLE_PATH
@@ -306,9 +306,9 @@ function (psq_test_find_tool_executable_in_system_path)
                                   CUSTOM_PATHS ${CUSTOM_EXEC_ROOT}
                                                "${_INVOKING_RUNTIME_OUTPUT_DIR}"
                                   PATH_SUFFIXES
-                                  "sample_executable/${CMAKE_CFG_INTDIR}")
+                                  "${INTDIR}")
         set (ENV{PATH}
-             "${CUSTOM_EXEC_LOCATION}/${CMAKE_CFG_INTDIR};$ENV{PATH}")
+             "${CUSTOM_EXEC_LOCATION}/${INTDIR};$ENV{PATH}")
         psq_find_tool_executable (${CUSTOM_EXEC_NAME} PATH_TO_EXECUTABLE)
         set (NONNORMALIZED_EXECPTED_EXECUTABLE_PATH
              "${CUSTOM_EXEC_LOCATION}/${INTDIR}/${CUSTOM_EXEC_NAME}")
@@ -337,7 +337,7 @@ function (psq_test_find_tool_extract_version)
                                   CUSTOM_PATHS ${CUSTOM_EXEC_ROOT}
                                                "${_INVOKING_RUNTIME_OUTPUT_DIR}"
                                   PATH_SUFFIXES
-                                  "sample_executable/${CMAKE_CFG_INTDIR}")
+                                  "${CMAKE_CFG_INTDIR}")
         psq_find_tool_extract_version ("${CUSTOM_EXEC}" VERSION
                                        VERSION_ARG --version
                                        VERSION_HEADER "VERSION_HEADER "
